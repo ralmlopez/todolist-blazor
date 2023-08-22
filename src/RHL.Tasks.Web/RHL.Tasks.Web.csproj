@@ -6,4 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\RHL.Tasks.Application\RHL.Tasks.Application.csproj" />
+  </ItemGroup>
 </Project>
