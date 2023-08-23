@@ -11,7 +11,9 @@
 
                 <li class=@cssClass @onclick="async () => { if (AllowSelect) await SelectTask(task); }">
                     @task.Task
-                    <button type="button" class="btn btn-danger" @onclick="() => RemoveTask(task)"><i class="bi bi-x-circle"></i></button>
+                    <button type="button" class="btn btn-danger" @onclick="() => RemoveTask(task)" @onclick:stopPropagation="true">
+                        <i class="bi bi-x-circle"></i>
+                    </button>
                 </li>
             }
     </ul>
