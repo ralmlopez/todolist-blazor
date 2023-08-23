@@ -19,6 +19,11 @@ public partial class Tasks : ComponentBase
     [Parameter]
     public EventCallback<TaskItem> OnTaskRemoved { get; set; }
 
+    public void Clear()
+    {
+        SelectedItem = null;
+    }
+
     async Task SelectTask(TaskItem taskItem)
     {
         SelectedItem = taskItem;

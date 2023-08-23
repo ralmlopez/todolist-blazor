@@ -5,7 +5,7 @@
 <div class="container">
   <div class="row py-3">
     <div class="col-md-5">
-        <h1>Tasks</h1>
+        <h2>TASKS</h2>
         <Tasks 
             @ref="Tasks"
             TaskItems=@TaskItems
@@ -20,9 +20,8 @@
         </div>
     </div>
     <div class="col-md-5">
-        <h1>Completed</h1>
+        <h2>DONE</h2>
         <Tasks
-            @ref="Completed"
             TaskItems=@CompletedItems
             OnTaskRemoved=@TaskRemoved
             AllowSelect=false />
@@ -32,7 +31,7 @@
   <div class="row">
       <div>
         <input type="text" @bind=NewTask />
-        <button type="button" class="btn btn-primary" @onclick="@AddTask"><i class="bi bi-file-plus"></i> Add Task </button>
+        <button type="button" class="btn btn-primary" @onclick="@AddTask"><i class="bi bi-file-plus"></i> Add New </button>
       </div>
   </div>
 
@@ -41,7 +40,7 @@
   <div class="row py-3">
       <div>
         <input type="text" @bind=UpdatedTask />
-        <button type="button" class="btn btn-primary" @onclick="@UpdateTask"><i class="bi bi-file-arrow-up"></i> Update Task </button>
+        <button type="button" class="btn btn-primary" @onclick="@UpdateTask"><i class="bi bi-file-arrow-up"></i> Update </button>
       </div>
   </div>
 }

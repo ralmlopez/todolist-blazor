@@ -7,16 +7,15 @@ using RHL.Tasks.Web.Components;
 public partial class Index : ComponentBase
 {
     [Inject]
-    DataStore? DataStore { get; set; }
+    DataStore DataStore { get; set; } = default!;
 
     string? NewTask;
     string? UpdatedTask;
     TaskItem? SelectedTask;
-    IEnumerable<TaskItem>? TaskItems { get; set; }
-    IEnumerable<TaskItem>? CompletedItems { get; set; }
+    IEnumerable<TaskItem> TaskItems { get; set; } = default!;
+    IEnumerable<TaskItem> CompletedItems { get; set; } = default!;
 
-    public Tasks? Tasks { get; set; }
-    public Tasks? Completed { get; set; }
+    public Tasks Tasks { get; set; } = default!;
 
     protected override void OnInitialized()
     {
@@ -24,7 +23,7 @@ public partial class Index : ComponentBase
         GetCompleted();
     }
 
-    private void GetCompleted()
+    void GetCompleted()
     {
         CompletedItems = Projections.GetTasksCompleted(DataStore);
     }
@@ -60,9 +59,10 @@ public partial class Index : ComponentBase
 
     void UpdateTask()
     {
-        if (SelectedTask != null)
+        if (SelectedTask != null && !string.IsNullOrEmpty(UpdatedTask))
         {
             Commands.UpdateTask(DataStore, SelectedTask.Id, UpdatedTask);
+            Tasks.Clear();
             Reset();
             GetTasks();
         }

@@ -1,31 +1,20 @@
 <div class="task-list">
+
 @if (TaskItems != null)
 {
     <ul class="list-group">
             @foreach (var task in TaskItems)
             {
-                if (SelectedItem != null && SelectedItem.Id == task.Id)
-                {
-                    <li class="list-group-item d-flex justify-content-between align-items-start active">
-                        @task.Task
-                        <button type="button" class="btn btn-danger" @onclick="() => RemoveTask(task)"><i class="bi bi-x-circle"></i></button>
-                    </li>
-                }
-                else if (AllowSelect)
-                {
-                    <li class="list-group-item d-flex justify-content-between align-items-start" @onclick="() => SelectTask(task)">
-                        @task.Task
-                        <button type="button" class="btn btn-danger" @onclick="() => RemoveTask(task)"><i class="bi bi-x-circle"></i></button>
-                    </li>
-                }
-                else
-                {
-                    <li class="list-group-item d-flex justify-content-between align-items-start">
-                        @task.Task
-                        <button type="button" class="btn btn-danger" @onclick="() => RemoveTask(task)"><i class="bi bi-x-circle"></i></button>
-                    </li>
-                }
+                var cssClass = (SelectedItem != null && SelectedItem.Id == task.Id) ? 
+                    "list-group-item d-flex justify-content-between align-items-start active" 
+                    : "list-group-item d-flex justify-content-between align-items-start";
+
+                <li class=@cssClass @onclick="async () => { if (AllowSelect) await SelectTask(task); }">
+                    @task.Task
+                    <button type="button" class="btn btn-danger" @onclick="() => RemoveTask(task)"><i class="bi bi-x-circle"></i></button>
+                </li>
             }
     </ul>
 }
+
 </div>
