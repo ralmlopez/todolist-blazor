@@ -5,8 +5,10 @@ public class Projections
     public static IEnumerable<TaskItem> GetTasksPending(DataStore dataStore)
     {
         var allTasks = dataStore.GetAllEvents().ToList();
-
-        HashSet<int> tasksCompletedOrRemoved = Projections.tasksCompletedOrRemoved(allTasks);
+        var tasksCompletedOrRemoved = new HashSet<int>(
+                allTasks
+                .Where(x => x.EventType == EventType.TaskCompleted || x.EventType == EventType.TaskRemoved)
+                .Select(x => x.Id));
 
         return allTasks
             .Where(x => (x.EventType == EventType.TaskCreated || x.EventType == EventType.TaskUpdated)
@@ -16,50 +18,18 @@ public class Projections
             .Select(x => new TaskItem(x.Id, x.Task));
     }
 
-    private static HashSet<int> tasksCompletedOrRemoved(List<Event> allTasks)
-    {
-        return new HashSet<int>(allTasks.Where(x => x.EventType == EventType.TaskCompleted
-                    || x.EventType == EventType.TaskRemoved).Select(x => x.Id));
-    }
-
-    public static string? GetTaskPending(DataStore dataStore, int id)
-    {
-        var allTasks = dataStore.GetAllEvents().ToList();
-
-        HashSet<int> tasksCompletedOrRemoved = Projections.tasksCompletedOrRemoved(allTasks);
-
-        return allTasks
-            .Where(x => (x.EventType == EventType.TaskCreated || x.EventType == EventType.TaskUpdated)
-                    && !tasksCompletedOrRemoved.Contains(x.Id)
-                    && x.Id == id)
-            .GroupBy(x => x.Id)
-            .Select(g => g.OrderBy(c => c.Id).ThenByDescending(c => c.Created).First())
-            .Select(x => x.Task)
-            .FirstOrDefault();
-    }
-
-    public static string? GetTaskNotRemoved(DataStore dataStore, int id)
-    {
-        var allTasks = dataStore.GetAllEvents().ToList();
-
-        return allTasks
-            .Where(x => x.EventType != EventType.TaskRemoved
-                    && x.Id == id)
-            .GroupBy(x => x.Id)
-            .Select(g => g.OrderBy(c => c.Id).ThenByDescending(c => c.Created).First())
-            .Select(x => x.Task)
-            .FirstOrDefault();
-    }
-
     public static IEnumerable<TaskItem> GetTasksCompleted(DataStore dataStore)
     {
         var allTasks = dataStore.GetAllEvents().ToList();
-        var exclude = new HashSet<int>(allTasks.Where(x => x.EventType == EventType.TaskRemoved).Select(x => x.Id));
+        var tasksCompleted = new HashSet<int>(allTasks.Where(x => x.EventType == EventType.TaskCompleted).Select(x => x.Id));
+        var tasksRemoved = new HashSet<int>(allTasks.Where(x => x.EventType == EventType.TaskRemoved).Select(x => x.Id));
 
-        return dataStore
-            .GetAllEvents()
-            .Where(task => task.EventType == EventType.TaskCompleted
-                    && !exclude.Contains(task.Id))
+        return allTasks
+            .Where(x => (x.EventType == EventType.TaskCreated || x.EventType == EventType.TaskUpdated)
+                    && tasksCompleted.Contains(x.Id)
+                    && !tasksRemoved.Contains(x.Id))
+            .GroupBy(x => x.Id)
+            .Select(g => g.OrderBy(c => c.Id).ThenByDescending(c => c.Created).First())
             .Select(x => new TaskItem(x.Id, x.Task));
     }
 }

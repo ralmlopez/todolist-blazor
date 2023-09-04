@@ -3,11 +3,11 @@ namespace RHL.Tasks.Application;
 public class Event
 {
     public int Id { get; private set; }
-    public string Task { get; private set; }
+    public string? Task { get; private set; }
     public string EventType { get; private set; }
     public DateTime Created { get; private set; }
 
-    public Event(int id, string task, string eventType, DateTime created)
+    public Event(int id, string? task, string eventType, DateTime created)
     {
         Id = id;
         Task = task;

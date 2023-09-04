@@ -10,24 +10,16 @@ public class Commands
 
     public static void UpdateTask(DataStore dataStore, int id, string task)
     {
-        if (Projections.GetTaskPending(dataStore, id) == null) return;
-
         dataStore.AppendEvent(id, task, EventType.TaskUpdated);
     }
 
     public static void CompleteTask(DataStore dataStore, int id)
     {
-        var task = Projections.GetTaskPending(dataStore, id);
-        if (task == null) return;
-
-        dataStore.AppendEvent(id, task, EventType.TaskCompleted);
+        dataStore.AppendEvent(id, EventType.TaskCompleted);
     }
 
     public static void RemoveTask(DataStore dataStore, int id)
     {
-        var task = Projections.GetTaskNotRemoved(dataStore, id);
-        if (task == null) return;
-
-        dataStore.AppendEvent(id, task, EventType.TaskRemoved);
+        dataStore.AppendEvent(id, EventType.TaskRemoved);
     }
 }

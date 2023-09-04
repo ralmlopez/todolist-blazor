@@ -19,6 +19,12 @@ public class DataStore
         nextId++;
     }
 
+    public void AppendEvent(int id, string eventType)
+    {
+        var record = $"{id},,{eventType},{DateTime.Now}";
+        File.AppendAllLines(fileName, new[] { record });
+    }
+
     public void AppendEvent(int id, string task, string eventType)
     {
         var record = $"{id},{task},{eventType},{DateTime.Now}";
