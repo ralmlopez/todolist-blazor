@@ -6,27 +6,31 @@ public class Projections
     {
         var allTasks = dataStore.GetAllEvents().ToList();
 
-        var exclusions = new HashSet<int>(allTasks.Where(x => x.EventType == EventType.TaskCompleted
-                    || x.EventType == EventType.TaskRemoved).Select(x => x.Id));
+        HashSet<int> tasksCompletedOrRemoved = Projections.tasksCompletedOrRemoved(allTasks);
 
         return allTasks
             .Where(x => (x.EventType == EventType.TaskCreated || x.EventType == EventType.TaskUpdated)
-                    && !exclusions.Contains(x.Id))
+                    && !tasksCompletedOrRemoved.Contains(x.Id))
             .GroupBy(x => x.Id)
             .Select(g => g.OrderBy(c => c.Id).ThenByDescending(c => c.Created).First())
             .Select(x => new TaskItem(x.Id, x.Task));
+    }
+
+    private static HashSet<int> tasksCompletedOrRemoved(List<Event> allTasks)
+    {
+        return new HashSet<int>(allTasks.Where(x => x.EventType == EventType.TaskCompleted
+                    || x.EventType == EventType.TaskRemoved).Select(x => x.Id));
     }
 
     public static string? GetTaskPending(DataStore dataStore, int id)
     {
         var allTasks = dataStore.GetAllEvents().ToList();
 
-        var exclusions = new HashSet<int>(allTasks.Where(x => x.EventType == EventType.TaskCompleted
-                    || x.EventType == EventType.TaskRemoved).Select(x => x.Id));
+        HashSet<int> tasksCompletedOrRemoved = Projections.tasksCompletedOrRemoved(allTasks);
 
         return allTasks
             .Where(x => (x.EventType == EventType.TaskCreated || x.EventType == EventType.TaskUpdated)
-                    && !exclusions.Contains(x.Id)
+                    && !tasksCompletedOrRemoved.Contains(x.Id)
                     && x.Id == id)
             .GroupBy(x => x.Id)
             .Select(g => g.OrderBy(c => c.Id).ThenByDescending(c => c.Created).First())
